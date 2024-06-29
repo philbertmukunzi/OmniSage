@@ -1,9 +1,9 @@
-# OmniSage: Discord LLM Chatbot
+# OmniSage: Multimodal Discord LLM Chatbot
 
 OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, and provide text-to-speech functionality. It's designed to be your all-knowing companion in Discord servers.
 
 **🚀 Hobby Project Disclaimer 🛸**
-> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration in a fun way. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code.😉
+> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration in a fun way . Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code.😉
 
 ## Table of Contents
 1. [Features](#features)
@@ -98,7 +98,7 @@ We're constantly working to improve OmniSage and expand its capabilities. Here a
 
 2. **Custom Personality Profiles**: Allow server admins to customize OmniSage's personality and behavior for their specific community needs.
 
-3. **Integration with External APIs**: Connect OmniSage to various external APIs for real-time information (weather, news, etc.).
+3. **Integration with External APIs**: Connect OmniSage to various external APIs like Slack , Teams and other API's.
 
 4. **Advanced Conversation Memory**: Implement long-term memory storage to remember user preferences and past interactions across sessions.
 
@@ -134,7 +134,7 @@ We're constantly working to improve OmniSage and expand its capabilities. Here a
    sudo apt install python3 python3-pip ffmpeg
 2. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/discord-llm-chatbot.git
+    git clone https://github.com/philbertmukunzi/OmniSage
     cd discord-llm-chatbot
 3. Create and activate a virtual environment:
     ```bash
@@ -153,7 +153,7 @@ We're constantly working to improve OmniSage and expand its capabilities. Here a
     brew install python ffmpeg
 3. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/discord-llm-chatbot.git
+    git clone https://github.com/philbertmukunzi/OmniSage
     cd discord-llm-chatbot
 4. Create and activate a virtual environment:
     ```bash
@@ -171,7 +171,7 @@ We're constantly working to improve OmniSage and expand its capabilities. Here a
     Extract the downloaded file and add the bin folder to your system PATH.
 3. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/discord-llm-chatbot.git
+    git clone https://github.com/philbertmukunzi/OmniSage
     cd discord-llm-chatbot
 4. Create and activate a virtual environment:
     ```bash
