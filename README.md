@@ -148,7 +148,7 @@ OmniSage can be run as a Docker container for easy deployment and management.
 2. Clone the repository:
     ```bash
     git clone https://github.com/philbertmukunzi/OmniSage
-    cd discord-llm-chatbot
+    cd OmniSage
 3. Create and activate a virtual environment:
     ```bash
     python3 -m venv venv
@@ -167,7 +167,7 @@ OmniSage can be run as a Docker container for easy deployment and management.
 3. Clone the repository:
     ```bash
     git clone https://github.com/philbertmukunzi/OmniSage
-    cd discord-llm-chatbot
+    cd OmniSage
 4. Create and activate a virtual environment:
     ```bash
     python3 -m venv venv
@@ -185,7 +185,7 @@ OmniSage can be run as a Docker container for easy deployment and management.
 3. Clone the repository:
     ```bash
     git clone https://github.com/philbertmukunzi/OmniSage
-    cd discord-llm-chatbot
+    cd OmniSage
 4. Create and activate a virtual environment:
     ```bash
     python -m venv venv
