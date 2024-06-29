@@ -8,38 +8,22 @@ __pycache__/
 venv/
 env/
 ENV/
-
-# IDEs and Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Operating System Files
-.DS_Store
-Thumbs.db
-
-# Project-specific
 .env
-config.ini
-*.log
-logs/
 
-# Discord bot specific
-response.mp3
-
-# Grounding data (if stored locally)
-data/
-
-# Dependency directories
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
 lib/
 lib64/
 parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -66,19 +50,20 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+cover/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
 
 # pyenv
 .python-version
 
 # Environments
-.env
 .venv
-env/
-venv/
-ENV/
 env.bak/
 venv.bak/
 
@@ -105,3 +90,44 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Docker
+.docker
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# OmniSage specific
+config.ini
+*.log
+logs/
+data/
+response.mp3
+
+# Sensitive information
+secrets.json
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
