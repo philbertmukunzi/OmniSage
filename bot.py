@@ -23,8 +23,9 @@ def setup_bot():
     
     # Add the is_allowed method to the bot object
     async def is_allowed(ctx):
-        return (not Config.ALLOWED_CHANNEL_IDS or ctx.channel.id in Config.ALLOWED_CHANNEL_IDS) and \
-               (not Config.ALLOWED_ROLE_IDS or any(role.id in Config.ALLOWED_ROLE_IDS for role in ctx.author.roles))
+        if not Config.ALLOWED_CHANNEL_IDS:  # If the set is empty, allow all channels
+            return True
+        return ctx.channel.id in Config.ALLOWED_CHANNEL_IDS
     
     bot.is_allowed = is_allowed
     

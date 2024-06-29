@@ -1,9 +1,9 @@
-# OmniSage: Multimodal Discord LLM Chatbot
+# OmniSage: Discord LLM Chatbot
 
 OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, and provide text-to-speech functionality. It's designed to be your all-knowing companion in Discord servers.
 
 **🚀 Hobby Project Disclaimer 🛸**
-> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration in a fun way . Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code.😉
+> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code. Remember, even AI needs to let its hair down sometimes! 😉
 
 ## Table of Contents
 1. [Features](#features)
@@ -12,20 +12,18 @@ OmniSage is a versatile Discord bot that leverages Language Learning Models (LLM
 4. [Prerequisites](#prerequisites)
 5. [Installation](#installation)
 6. [Configuration](#configuration)
-7. [Usage](#usage)
-8. [Command Details](#command-details)
-9. [Grounding Data](#grounding-data)
-10. [Troubleshooting](#troubleshooting)
-11. [Contributing](#contributing)
-12. [License](#license)
+7. [Docker Usage](#docker-usage)
+8. [Usage](#usage)
+9. [Command Details](#command-details)
+10. [Grounding Data](#grounding-data)
+11. [Troubleshooting](#troubleshooting)
+12. [Contributing](#contributing)
+13. [License](#license)
 
 ## Features
 
-OmniSage comes packed with a variety of features:
-
 - Intelligent responses using various LLM providers (OpenAI, Anthropic, local models)
-- Voice channel integration
-- Text-to-Speech (TTS) functionality
+- Voice channel integration with Text-to-Speech (TTS) functionality
 - Support for image analysis (if LLM supports it)
 - Rate limiting and cooldowns
 - Configurable through environment variables
@@ -39,7 +37,7 @@ OmniSage comes packed with a variety of features:
 
 ### Intelligent Responses
 OmniSage utilizes state-of-the-art Language Learning Models to generate human-like responses. It supports multiple LLM providers:
-- OpenAI (GPT-3.5, GPT-4, GPT-4o)
+- OpenAI (GPT-3.5, GPT-4)
 - Anthropic (Claude, Claude Instant)
 - Local models (with appropriate setup)
 
@@ -79,9 +77,9 @@ The bot maintains conversation history to provide context-aware responses, enhan
 - Translation command to translate text to English
 - Comprehensive help command for user guidance
 
-### Extensibility
-- Modular code structure for easy additions and modifications
-- Support for adding new commands and features
+## Planned Features
+
+(List of planned features here)
 
 ## Prerequisites
 
@@ -89,43 +87,36 @@ The bot maintains conversation history to provide context-aware responses, enhan
 - FFmpeg (for voice functionality)
 - Discord Bot Token
 - API key(s) for chosen LLM provider(s)
-
-## Planned Features
-
-We're constantly working to improve OmniSage and expand its capabilities. Here are some features we're planning to implement in the future:
-
-1. **Multi-language Support**: Extend OmniSage's capabilities to understand and respond in multiple languages.
-
-2. **Custom Personality Profiles**: Allow server admins to customize OmniSage's personality and behavior for their specific community needs.
-
-3. **Integration with External APIs**: Connect OmniSage to various external APIs like Slack , Teams and other API's.
-
-4. **Advanced Conversation Memory**: Implement long-term memory storage to remember user preferences and past interactions across sessions.
-
-5. **Voice Recognition**: Add the ability for OmniSage to understand voice commands in voice channels.
-
-6. **Interactive Tutorials**: Create interactive tutorials to help new users learn how to use OmniSage effectively.
-
-7. **Sentiment Analysis**: Implement sentiment analysis to allow OmniSage to better understand and respond to user emotions.
-
-8. **Role-play Modes**: Add specific role-play modes where OmniSage can act as different characters or entities.
-
-9. **Customizable Command Creation**: Allow admins to create custom commands specific to their server needs.
-
-10. **Integration with Server Events**: Enable OmniSage to manage and interact with Discord server events.
-
-11. **Data Visualization**: Implement the ability to generate and share graphs or charts based on conversational data or external information.
-
-12. **Scheduled Messages**: Allow users to schedule messages or reminders through OmniSage.
+- Docker (optional, for containerized deployment)
 
 
+## Configuration
+1. Copy the .env.example file to a new file named .env:
+    ```bash
+    cp .env.example .env
+2. Open the `.env` file and fill in all the required values. Refer to the comments in the file for guidance on each setting.
 
-
+3. Make sure to keep your `.env` file secure and never commit it to version control.
 
 ## Installation
 
-1. Clone the repository:
 
+## Docker Usage (Preferred )
+
+OmniSage can be run as a Docker container for easy deployment and management.
+
+1. Build the Docker image:
+    ```
+    docker build -t omnisage .
+    ```
+2. Run the container:
+    ```
+    docker run --env-file .env omnisage
+    ```
+    Make sure your `.env` file is in the same directory when running the container.
+
+
+1. Activate the virtual environment (if not using Docker):
 ### Linux
 
 1. Update package list and install required system packages:
@@ -181,16 +172,10 @@ We're constantly working to improve OmniSage and expand its capabilities. Here a
     ```bash
     pip install -r requirements.txt
 
-## Configuration
-1. Copy the .env.example file to a new file named .env:
-    ```bash
-    cp .env.example .env
-2. Open the `.env` file and fill in all the required values. Refer to the comments in the file for guidance on each setting.
 
-3. Make sure to keep your `.env` file secure and never commit it to version control.
 
 ## Usage
-1. Activate the virtual environment (if not already activated):
+1. Activate the virtual environment (if not using Docker):
     Linux/macOS:
     ```bash
     source venv/bin/activate
@@ -243,6 +228,7 @@ Use the `!reload_grounding` command to refresh OmniSage's grounding data without
 - Verify that the channel or user role is in the allowed list in the `.env` file.
 - For voice command issues, ensure FFmpeg is correctly installed and accessible.
 - Check the console output for any error messages.
+- If using Docker, ensure all necessary environment variables are properly set in your `.env` file.
 
 ## Contributing
 
