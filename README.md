@@ -12,7 +12,7 @@ OmniSage is a versatile Discord bot that leverages Language Learning Models (LLM
 4. [Prerequisites](#prerequisites)
 5. [Installation](#installation)
 6. [Configuration](#configuration)
-7. [Docker Usage](#docker-usage)
+7. [Docker Usage](#docker-usage-preferred)
 8. [Usage](#usage)
 9. [Command Details](#command-details)
 10. [Grounding Data](#grounding-data)
@@ -101,7 +101,7 @@ The bot maintains conversation history to provide context-aware responses, enhan
 ## Installation
 
 
-## Docker Usage (Preferred )
+## Docker Usage (Preferred)
 
 OmniSage can be run as a Docker container for easy deployment and management.
 
