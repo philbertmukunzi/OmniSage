@@ -79,7 +79,29 @@ The bot maintains conversation history to provide context-aware responses, enhan
 
 ## Planned Features
 
-(List of planned features here)
+1. **Multi-Model Support**: Extend OmniSage's capabilities to use multiple models.
+
+2. **Custom Personality Profiles**: Allow server admins to customize OmniSage's personality and behavior for their specific community needs.
+
+3. **Integration with External APIs**: Connect OmniSage to various external APIs liek Slack and Teams.
+
+4. **Advanced Conversation Memory**: Implement long-term memory storage to remember user preferences and past interactions across sessions.
+
+5. **Voice Recognition**: Add the ability for OmniSage to understand voice commands in voice channels.
+
+6. **Interactive Tutorials**: Create interactive tutorials to help new users learn how to use OmniSage effectively.
+
+7. **Sentiment Analysis**: Implement sentiment analysis to allow OmniSage to better understand and respond to user emotions.
+
+8. **Role-play Modes**: Add specific role-play modes where OmniSage can act as different characters or entities.
+
+9. **Customizable Command Creation**: Allow admins to create custom commands specific to their server needs.
+
+10. **Integration with Server Events**: Enable OmniSage to manage and interact with Discord server events.
+
+11. **Data Visualization**: Implement the ability to generate and share graphs or charts based on conversational data or external information.
+
+12. **Scheduled Messages**: Allow users to schedule messages or reminders through OmniSage.
 
 ## Prerequisites
 
