@@ -1,8 +1,10 @@
+# bot.py
+
 import discord
 from discord.ext import commands
 from config import Config
 from commands import setup_commands
-from utils.llm_utils import load_grounding_data
+from utils.llm_utils import generate_response, load_grounding_data
 
 def setup_bot():
     intents = discord.Intents.default()
@@ -16,16 +18,18 @@ def setup_bot():
     )
     
     bot.config = Config
-    bot.conversation_history = {}  # Initialize conversation_history
-    bot.request_timestamps = []  # Initialize request_timestamps for rate limiting
-    bot.tts_enabled = Config.TTS_ENABLED  # Use the value from config
+    bot.conversation_history = {}
+    bot.request_timestamps = []
+    bot.tts_enabled = Config.TTS_ENABLED
+
+    async def bot_generate_response(messages):
+        return await generate_response(bot, messages)
+
+    bot.generate_response = bot_generate_response
     
-    
-    # Add the is_allowed method to the bot object
     async def is_allowed(ctx):
-        if not Config.ALLOWED_CHANNEL_IDS:  # If the set is empty, allow all channels
-            return True
-        return ctx.channel.id in Config.ALLOWED_CHANNEL_IDS
+        return (not Config.ALLOWED_CHANNEL_IDS or ctx.channel.id in Config.ALLOWED_CHANNEL_IDS) and \
+               (not Config.ALLOWED_ROLE_IDS or any(role.id in Config.ALLOWED_ROLE_IDS for role in ctx.author.roles))
     
     bot.is_allowed = is_allowed
     
@@ -48,12 +52,7 @@ def setup_bot():
         await bot.process_commands(message)
         
         if bot.user in message.mentions or isinstance(message.channel, discord.DMChannel):
-            # Handle chat messages (implementation in utils/llm_utils.py)
             from utils.llm_utils import handle_chat_message
             await handle_chat_message(bot, message)
     
     return bot
-
-async def is_allowed(ctx):
-    return (not Config.ALLOWED_CHANNEL_IDS or ctx.channel.id in Config.ALLOWED_CHANNEL_IDS) and \
-           (not Config.ALLOWED_ROLE_IDS or any(role.id in Config.ALLOWED_ROLE_IDS for role in ctx.author.roles))
