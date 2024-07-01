@@ -1,4 +1,7 @@
+# commands/user_commands.py
+
 from discord.ext import commands
+from utils.trivia_game import TriviaGame, active_games
 from utils.llm_utils import generate_response
 
 def setup_user_commands(bot):
@@ -15,6 +18,7 @@ def setup_user_commands(bot):
             f"`{bot.config.BOT_PREFIX}clear_history` - Clear conversation history (Admin only)\n"
             f"`{bot.config.BOT_PREFIX}translate <text>` - Translate text to English\n"
             f"`{bot.config.BOT_PREFIX}reload_grounding` - Reload grounding data (Admin only)\n"
+            f"`{bot.config.BOT_PREFIX}trivia <topic>` - Start a trivia game on the specified topic\n"
             "Mention the bot or DM it to start a conversation"
         )
         await ctx.send(help_text)
@@ -23,10 +27,30 @@ def setup_user_commands(bot):
     async def translate(ctx, *, text: str):
         """Translate text to English."""
         try:
-            translation = await generate_response([
+            translation = await generate_response(bot, [
                 {"role": "user", "content": f"Translate the following text to English: {text}"}
             ])
             await ctx.send(f"Translation: {translation}")
         except Exception as e:
             print(f"Translation error: {e}")
             await ctx.send("An error occurred during translation. Please try again later.")
+
+
+    @bot.command(name="trivia")
+    async def trivia(ctx, *, topic: str):
+        """Start a trivia game on a specific topic."""
+        if ctx.channel.id in active_games:
+            await ctx.send("A game is already in progress in this channel!")
+            return
+
+        try:
+            game = TriviaGame(bot, ctx.channel, topic)
+            active_games[ctx.channel.id] = game
+            await game.start_game()
+        except ValueError as e:
+            await ctx.send(f"Error starting the game: {str(e)}")
+        except Exception as e:
+            await ctx.send(f"An unexpected error occurred: {str(e)}")
+        finally:
+            if ctx.channel.id in active_games:
+                del active_games[ctx.channel.id]

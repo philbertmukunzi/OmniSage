@@ -22,22 +22,20 @@ OmniSage is a versatile Discord bot that leverages Language Learning Models (LLM
 
 ## Features
 
-- Intelligent responses using various LLM providers (OpenAI, Anthropic, local models)
-- Voice channel integration with Text-to-Speech (TTS) functionality
-- Support for image analysis (if LLM supports it)
-- Rate limiting and cooldowns
-- Configurable through environment variables
-- Admin commands for bot management
-- Multi-channel and role-based permissions
-- Conversation history management
-- Translation command
-- Grounding with custom data (local files, S3, or Azure Blob Storage)
+- AI-powered conversations using various LLM providers
+- Voice channel integration with Text-to-Speech (TTS)
+- Interactive AI-generated trivia game
+- Image analysis capabilities (LLM-dependent)
+- Multi-language support with translation
+- Custom data grounding for enhanced knowledge
+- Advanced conversation management
+- Robust admin controls and customization options
 
 ## Features in Detail
 
-### Intelligent Responses
+### Intelligent Conversations
 OmniSage utilizes state-of-the-art Language Learning Models to generate human-like responses. It supports multiple LLM providers:
-- OpenAI (GPT-3.5, GPT-4)
+- OpenAI (GPT-3.5, GPT-4, GPT-4o)
 - Anthropic (Claude, Claude Instant)
 - Local models (with appropriate setup)
 
@@ -48,19 +46,11 @@ The bot maintains conversation history to provide context-aware responses, enhan
 - Text-to-Speech (TTS) functionality to read out responses in voice channels
 - Configurable TTS settings (model, voice)
 
-### Configurability
-- Extensive configuration options via environment variables
-- Customizable command prefix, cooldowns, and rate limits
-- Ability to restrict bot usage to specific channels and roles
+### Multi-Language Support
+- Translate command for quick translations to English
+- Potential for multi-language conversations (LLM-dependent)
 
-### Admin Features
-- Set bot status
-- Toggle TTS on/off
-- View current LLM configuration
-- Clear conversation history
-- Reload grounding data
-
-### Grounding Data
+### Custom Knowledge Grounding
 - Enhance OmniSage's knowledge with custom data
 - Support for multiple data sources:
   - Local files
@@ -68,14 +58,30 @@ The bot maintains conversation history to provide context-aware responses, enhan
   - Azure Blob Storage
 - Dynamic reloading of grounding data without bot restart
 
-### Security and Performance
-- Rate limiting to prevent API abuse
-- Cooldowns on commands to manage usage
-- Secure handling of API keys and sensitive information
+### Advanced Conversation Management
+- Conversation history tracking for context-aware responses
+- Channel-specific conversation handling
+- Admin command to clear conversation history
 
-### Utility Features
-- Translation command to translate text to English
-- Comprehensive help command for user guidance
+### Customization and Admin Controls
+- Configurable command prefix and cooldowns
+- Rate limiting to prevent API abuse
+- Role-based access control for commands
+- Admin commands for bot management (status setting, TTS toggling, etc.)
+
+### Security and Performance
+- Secure handling of API keys and sensitive information
+- Docker support for easy deployment and management
+- Optimized for performance with rate limiting and cooldowns
+
+### AI-Powered Trivia Game
+An exciting trivia game feature that showcases OmniSage's AI capabilities:
+- Start a game with `!trivia <topic>` on any subject
+- AI generates 5 unique, topic-specific questions
+- 30-second answer window for each question
+- Multiple correct answers accepted per question
+- Detailed end-game summary with scores and statistics
+
 
 ## Planned Features
 
@@ -223,10 +229,23 @@ OmniSage can be run as a Docker container for easy deployment and management.
 | `!clear_history` | Clears conversation history for the current channel | Admin only |
 | `!translate <text>` | Translates the given text to English | All users |
 | `!reload_grounding` | Reloads grounding data | Admin only |
+| `!trivia <topic>` | Starts a trivia game on the specified topic | All users |
 | `!chathelp` | Displays help information for chat commands | All users |
 
 To interact with OmniSage, either mention it or use it in allowed channels.
 
+## Grounding Data
+
+(Grounding data section here)
+
+## Troubleshooting
+
+- If OmniSage doesn't respond, check if it has the necessary permissions in your Discord server.
+- Verify that the channel or user role is in the allowed list in the `.env` file.
+- For voice command issues, ensure FFmpeg is correctly installed and accessible.
+- Check the console output for any error messages.
+- If using Docker, ensure all necessary environment variables are properly set in your `.env` file.
+- For translation issues, make sure the LLM API is properly configured and accessible.
 ## Grounding Data
 
 OmniSage supports grounding with custom data from three sources:

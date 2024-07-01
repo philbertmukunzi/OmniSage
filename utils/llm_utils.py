@@ -1,20 +1,21 @@
+# utils/llm_utils.py
+
 import time
-import discord
 import asyncio
 from typing import List, Dict, Any
+import discord
 from litellm import acompletion
 from .grounding_utils import load_grounding_data
+from config import Config
 
 async def generate_response(bot, messages: List[Dict[str, Any]]) -> str:
+    """Generate a response using the configured LLM."""
     try:
-        system_message = bot.config.SYSTEM_PROMPT
-
-        if bot.config.USE_GROUNDING:
-            grounding_data = load_grounding_data()
-            if grounding_data:
-                grounding_context = "\n".join([f"Content of {data['filename']}:\n{data['content']}" for data in grounding_data])
-                system_message = f"{system_message}\n\nGrounding Information:\n{grounding_context}"
-
+        grounding_data = load_grounding_data() if bot.config.USE_GROUNDING else []
+        grounding_context = "\n".join([f"Content of {data['filename']}:\n{data['content']}" for data in grounding_data])
+        
+        system_message = f"{bot.config.SYSTEM_PROMPT}\n\nGrounding Information:\n{grounding_context}" if grounding_data else bot.config.SYSTEM_PROMPT
+        
         kwargs = {
             "model": bot.config.LLM_MODEL,
             "messages": [{"role": "system", "content": system_message}] + messages,
@@ -35,18 +36,20 @@ async def generate_response(bot, messages: List[Dict[str, Any]]) -> str:
         return "An unexpected error occurred. Please try again later."
 
 async def rate_limited_completion(bot, *args, **kwargs):
+    """Perform rate-limited completion requests to the LLM."""
     current_time = time.time()
     bot.request_timestamps.append(current_time)
     
-    bot.request_timestamps = [ts for ts in bot.request_timestamps if current_time - ts < bot.config.REQUEST_WINDOW]
+    bot.request_timestamps = [ts for ts in bot.request_timestamps if current_time - ts < Config.REQUEST_WINDOW]
     
-    if len(bot.request_timestamps) > bot.config.MAX_REQUESTS_PER_MINUTE:
-        wait_time = bot.config.REQUEST_WINDOW - (current_time - bot.request_timestamps[0])
+    if len(bot.request_timestamps) > Config.MAX_REQUESTS_PER_MINUTE:
+        wait_time = Config.REQUEST_WINDOW - (current_time - bot.request_timestamps[0])
         await asyncio.sleep(wait_time)
     
     return await acompletion(*args, **kwargs)
 
 async def handle_chat_message(bot, message):
+    """Handle incoming chat messages."""
     async with message.channel.typing():
         if message.channel.id not in bot.conversation_history:
             bot.conversation_history[message.channel.id] = []
@@ -57,8 +60,8 @@ async def handle_chat_message(bot, message):
             "timestamp": time.time()
         })
         
-        if len(bot.conversation_history[message.channel.id]) > bot.config.MAX_MESSAGES:
-            bot.conversation_history[message.channel.id] = bot.conversation_history[message.channel.id][-bot.config.MAX_MESSAGES:]
+        if len(bot.conversation_history[message.channel.id]) > Config.MAX_MESSAGES:
+            bot.conversation_history[message.channel.id] = bot.conversation_history[message.channel.id][-Config.MAX_MESSAGES:]
 
         response = await generate_response(bot, bot.conversation_history[message.channel.id])
 
@@ -70,7 +73,7 @@ async def handle_chat_message(bot, message):
 
         await message.reply(response)
 
-        if message.guild and message.guild.voice_client and bot.config.TTS_ENABLED:
+        if message.guild and message.guild.voice_client and bot.tts_enabled:
             from .tts_utils import generate_tts, cleanup_tts_file
             tts_file = await generate_tts(response)
             if tts_file:
