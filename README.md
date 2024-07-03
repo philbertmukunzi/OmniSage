@@ -51,12 +51,13 @@ The bot maintains conversation history to provide context-aware responses, enhan
 - Potential for multi-language conversations (LLM-dependent)
 
 ### Custom Knowledge Grounding
-- Enhance OmniSage's knowledge with custom data
+- Enhance OmniSage's knowledge with custom data. BYOD (Bring your Own Data)
 - Support for multiple data sources:
-  - Local files
+  - Local files (.txt and .docx)
   - Amazon S3
   - Azure Blob Storage
 - Dynamic reloading of grounding data without bot restart
+- Detailed logging of loaded grounding files
 
 ### Advanced Conversation Management
 - Conversation history tracking for context-aware responses
@@ -77,9 +78,11 @@ The bot maintains conversation history to provide context-aware responses, enhan
 ### AI-Powered Trivia Game
 An exciting trivia game feature that showcases OmniSage's AI capabilities:
 - Start a game with `!trivia <topic>` on any subject
-- AI generates 5 unique, topic-specific questions
-- 30-second answer window for each question
-- Multiple correct answers accepted per question
+- AI generates 5 unique, topic-specific multiple-choice questions
+- Players answer by typing A, B, C, or D (case-insensitive)
+- 15-second answer window for each question
+- Multiple players can answer and earn points
+- Administrators can stop the game at any time with `!stop_trivia`
 - Detailed end-game summary with scores and statistics
 
 
@@ -125,6 +128,11 @@ An exciting trivia game feature that showcases OmniSage's AI capabilities:
 2. Open the `.env` file and fill in all the required values. Refer to the comments in the file for guidance on each setting.
 
 3. Make sure to keep your `.env` file secure and never commit it to version control.
+
+4. Additional environment variables for grounding:
+    - `USE_GROUNDING`: Set to 'true' to enable grounding, 'false' to disable
+    - `GROUNDING_SOURCE`: Set to 'local', 's3', or 'azure'
+    - `GROUNDING_PATH`: Path to local grounding files or prefix for remote storage
 
 ## Installation
 
@@ -228,7 +236,8 @@ OmniSage can be run as a Docker container for easy deployment and management.
 | `!clear_history` | Clears conversation history for the current channel | Admin only |
 | `!translate <text>` | Translates the given text to English | All users |
 | `!reload_grounding` | Reloads grounding data | Admin only |
-| `!trivia <topic>` | Starts a trivia game on the specified topic | All users |
+| `!trivia <topic>` | Starts a multiple-choice trivia game on the specified topic | All users |
+| `!stop_trivia` | Stops the current trivia game | Admin only |
 | `!chathelp` | Displays help information for chat commands | All users |
 
 To interact with OmniSage, either mention it or use it in allowed channels.
@@ -245,6 +254,7 @@ To interact with OmniSage, either mention it or use it in allowed channels.
 - Check the console output for any error messages.
 - If using Docker, ensure all necessary environment variables are properly set in your `.env` file.
 - For translation issues, make sure the LLM API is properly configured and accessible.
+
 ## Grounding Data
 
 OmniSage supports grounding with custom data from three sources:

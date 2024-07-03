@@ -32,7 +32,7 @@ class Config:
 
     # Discord Bot Configuration
     DISCORD_BOT_TOKEN = get_env("DISCORD_BOT_TOKEN")
-    DISCORD_CLIENT_ID = get_env("DISCORD_CLIENT_ID")
+    DISCORD_APPLICATION_ID = get_env("DISCORD_APPLICATION_ID")
     DISCORD_STATUS = get_env("DISCORD_STATUS_MESSAGE")
     ALLOWED_CHANNEL_IDS = parse_int_list(get_env("ALLOWED_CHANNEL_IDS", ""))
     ALLOWED_ROLE_IDS = parse_int_list(get_env("ALLOWED_ROLE_IDS", ""))
