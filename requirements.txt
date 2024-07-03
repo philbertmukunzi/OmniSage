@@ -7,3 +7,4 @@ azure-storage-blob==12.16.0
 requests==2.31.0
 PyNaCl==1.4.0
 opuslib==3.0.1
+python-docx==0.8.11

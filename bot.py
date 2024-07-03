@@ -4,7 +4,8 @@ import logging
 import sys
 from config import Config
 from commands import setup_commands
-from utils.llm_utils import generate_response, load_grounding_data
+from utils.llm_utils import generate_response
+from utils.grounding_utils import load_grounding_data
 
 # Set up logging
 logging.basicConfig(
@@ -49,12 +50,16 @@ def setup_bot():
     @bot.event
     async def on_ready():
         logger.info(f"Logged in as {bot.user.name} (ID: {bot.user.id})")
-        logger.info(f"Bot invite link: https://discord.com/api/oauth2/authorize?client_id={bot.user.id}&permissions=8&scope=bot")
+        logger.info(f"Bot invite link: ")
+        logger.info(f"https://discord.com/api/oauth2/authorize?client_id={bot.user.id}&permissions=8&scope=bot")
         logger.info(f"Connected to {len(bot.guilds)} guilds")
         
         if bot.config.USE_GROUNDING:
+            logger.info("Loading grounding data...")
             grounding_data = load_grounding_data()
             logger.info(f"Grounding data loaded: {len(grounding_data)} files")
+            for data in grounding_data:
+                logger.info(f"Loaded: {data['filename']} (Content length: {len(data['content'])} characters)")
         else:
             logger.info("Grounding is disabled")
         
