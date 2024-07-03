@@ -1,10 +1,21 @@
-# bot.py
-
 import discord
 from discord.ext import commands
+import logging
+import sys
 from config import Config
 from commands import setup_commands
 from utils.llm_utils import generate_response, load_grounding_data
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 def setup_bot():
     intents = discord.Intents.default()
@@ -37,12 +48,17 @@ def setup_bot():
     
     @bot.event
     async def on_ready():
-        print(f"{bot.user} has connected to Discord!")
+        logger.info(f"Logged in as {bot.user.name} (ID: {bot.user.id})")
+        logger.info(f"Bot invite link: https://discord.com/api/oauth2/authorize?client_id={bot.user.id}&permissions=8&scope=bot")
+        logger.info(f"Connected to {len(bot.guilds)} guilds")
+        
         if bot.config.USE_GROUNDING:
-            load_grounding_data()
-            print("Grounding data loaded")
+            grounding_data = load_grounding_data()
+            logger.info(f"Grounding data loaded: {len(grounding_data)} files")
         else:
-            print("Grounding is disabled")
+            logger.info("Grounding is disabled")
+        
+        logger.info("Bot is ready!")
     
     @bot.event
     async def on_message(message):
@@ -56,3 +72,14 @@ def setup_bot():
             await handle_chat_message(bot, message)
     
     return bot
+
+def run_bot():
+    bot = setup_bot()
+    try:
+        bot.run(Config.DISCORD_BOT_TOKEN)
+    except Exception as e:
+        logger.error(f"Error running the bot: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    run_bot()

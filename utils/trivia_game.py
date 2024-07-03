@@ -1,10 +1,9 @@
-# utils/trivia_game.py
-
 import asyncio
 import random
 import re
 from typing import Dict, List
 from collections import defaultdict
+import discord
 
 class TriviaGame:
     def __init__(self, bot, channel, topic):
@@ -14,36 +13,43 @@ class TriviaGame:
         self.players: Dict[int, int] = defaultdict(int)  # User ID: Score
         self.current_question = None
         self.current_answer = None
+        self.current_options = []
         self.question_count = 0
         self.max_questions = 5
         self.asked_questions: List[str] = []  # To keep track of asked questions
         self.answer_timeout = 15.0  # Seconds to wait for answers
+        self.is_active = True
 
     async def generate_question(self):
         attempts = 5  # Increase attempts to allow for more variety
         for attempt in range(attempts):
             prompt = (
-                f"Generate a unique trivia question about {self.topic}. "
+                f"Generate a multiple choice trivia question about {self.topic}. "
                 f"This is question number {self.question_count + 1} out of {self.max_questions}. "
                 "Make sure it's different from these previously asked questions: "
                 f"{', '.join(self.asked_questions)}. "
-                "Provide the question and the correct answer in the following format:\n"
+                "Provide the question, four options (A, B, C, D), and the correct answer letter in the following format:\n"
                 "Question: [Your question here]\n"
-                "Answer: [Your answer here]"
+                "A: [Option A]\n"
+                "B: [Option B]\n"
+                "C: [Option C]\n"
+                "D: [Option D]\n"
+                "Answer: [Correct answer letter]"
             )
             response = await self.bot.generate_response([{"role": "user", "content": prompt}])
             
-            # Use regex to extract question and answer
-            match = re.search(r"Question: (.*?)\nAnswer: (.*)", response, re.DOTALL)
+            # Use regex to extract question, options, and answer
+            match = re.search(r"Question: (.*?)\nA: (.*?)\nB: (.*?)\nC: (.*?)\nD: (.*?)\nAnswer: (.)", response, re.DOTALL)
             if match:
-                question, answer = match.groups()
+                question, optionA, optionB, optionC, optionD, answer = match.groups()
                 question = question.strip()
-                answer = answer.strip()
+                options = [optionA.strip(), optionB.strip(), optionC.strip(), optionD.strip()]
+                answer = answer.strip().upper()
                 
                 # Check if this question is unique
                 if question not in self.asked_questions:
                     self.asked_questions.append(question)
-                    return question, answer
+                    return question, options, answer
         
         # If we couldn't generate a unique question after several attempts, raise an exception
         raise ValueError(f"Failed to generate a unique question about {self.topic} after {attempts} attempts.")
@@ -52,43 +58,58 @@ class TriviaGame:
         answered_players = set()
         start_time = asyncio.get_event_loop().time()
 
-        while asyncio.get_event_loop().time() - start_time < self.answer_timeout:
+        while asyncio.get_event_loop().time() - start_time < self.answer_timeout and self.is_active:
             try:
                 message = await self.bot.wait_for(
                     'message',
                     timeout=self.answer_timeout - (asyncio.get_event_loop().time() - start_time),
-                    check=lambda m: m.channel == self.channel and not m.author.bot and m.author.id not in answered_players
+                    check=lambda m: m.channel == self.channel and not m.author.bot
                 )
-                answered_players.add(message.author.id)
+                
+                if message.content.lower() == '!stop_trivia' and message.author.guild_permissions.administrator:
+                    self.is_active = False
+                    await self.channel.send("Trivia game stopped by an administrator.")
+                    return
 
-                if message.content.lower() == self.current_answer.lower():
-                    await self.channel.send(f"Correct, {message.author.mention}!")
-                    self.players[message.author.id] += 1
-                else:
-                    await self.channel.send(f"Sorry {message.author.mention}, that's incorrect.")
+                if message.author.id not in answered_players:
+                    answered_players.add(message.author.id)
+                    if message.content.upper() == self.current_answer:
+                        await self.channel.send(f"Correct, {message.author.mention}!")
+                        self.players[message.author.id] += 1
+                    elif message.content.upper() in ['A', 'B', 'C', 'D']:
+                        await self.channel.send(f"Sorry {message.author.mention}, that's incorrect.")
+                    else:
+                        await self.channel.send(f"{message.author.mention}, please answer with A, B, C, or D.")
 
             except asyncio.TimeoutError:
                 break
 
-        await self.channel.send(f"Time's up! The correct answer was: {self.current_answer}")
+        if self.is_active:
+            await self.channel.send(f"Time's up! The correct answer was: {self.current_answer}")
 
     async def start_game(self):
         await self.channel.send(f"Starting a trivia game on the topic of {self.topic}! Get ready!")
         await asyncio.sleep(2)
 
-        while self.question_count < self.max_questions:
+        while self.question_count < self.max_questions and self.is_active:
             self.question_count += 1
             try:
-                self.current_question, self.current_answer = await self.generate_question()
+                self.current_question, self.current_options, self.current_answer = await self.generate_question()
             except ValueError as e:
                 await self.channel.send(f"Error generating question: {str(e)}")
                 continue
 
-            await self.channel.send(f"Question {self.question_count}: {self.current_question}")
+            question_text = f"Question {self.question_count}: {self.current_question}\n"
+            for i, option in enumerate(['A', 'B', 'C', 'D']):
+                question_text += f"{option}: {self.current_options[i]}\n"
+            
+            await self.channel.send(question_text)
             await self.wait_for_answers()
-            await asyncio.sleep(2)
+            if self.is_active:
+                await asyncio.sleep(2)
 
-        await self.end_game()
+        if self.is_active:
+            await self.end_game()
 
     async def end_game(self):
         if not self.players:
@@ -103,7 +124,8 @@ class TriviaGame:
         summary = "Final Scores:\n"
         for player_id, score in sorted_players:
             player = self.channel.guild.get_member(player_id)
-            summary += f"{player.name}: {score} point{'s' if score != 1 else ''}\n"
+            if player:
+                summary += f"{player.name}: {score} point{'s' if score != 1 else ''}\n"
 
         # Add some statistics
         total_questions = self.question_count

@@ -1,5 +1,3 @@
-# commands/user_commands.py
-
 from discord.ext import commands
 from utils.trivia_game import TriviaGame, active_games
 from utils.llm_utils import generate_response
@@ -36,6 +34,7 @@ def setup_user_commands(bot):
             await ctx.send("An error occurred during translation. Please try again later.")
 
 
+
     @bot.command(name="trivia")
     async def trivia(ctx, *, topic: str):
         """Start a trivia game on a specific topic."""
@@ -54,3 +53,13 @@ def setup_user_commands(bot):
         finally:
             if ctx.channel.id in active_games:
                 del active_games[ctx.channel.id]
+
+    @bot.command(name="stop_trivia")
+    @commands.has_permissions(administrator=True)
+    async def stop_trivia(ctx):
+        """Stop the current trivia game (Admin only)."""
+        if ctx.channel.id in active_games:
+            active_games[ctx.channel.id].is_active = False
+            await ctx.send("Trivia game has been stopped.")
+        else:
+            await ctx.send("There is no active trivia game in this channel.")
