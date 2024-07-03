@@ -141,7 +141,6 @@ OmniSage can be run as a Docker container for easy deployment and management.
     ```
     docker run --env-file .env omnisage
     ```
-    Make sure your `.env` file is in the same directory when running the container.
 
 
 1. Activate the virtual environment (if not using Docker):

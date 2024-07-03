@@ -17,5 +17,7 @@ COPY . /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV PYTHONUNBUFFERED=1
+
 # Run the bot when the container launches
 CMD ["python", "main.py"]
