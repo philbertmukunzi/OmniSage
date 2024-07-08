@@ -38,10 +38,10 @@ async def rate_limited_completion(bot, *args, **kwargs):
     current_time = time.time()
     bot.request_timestamps.append(current_time)
     
-    bot.request_timestamps = [ts for ts in bot.request_timestamps if current_time - ts < Config.REQUEST_WINDOW]
+    bot.request_timestamps = [ts for ts in bot.request_timestamps if current_time - ts < bot.config.REQUEST_WINDOW]
     
-    if len(bot.request_timestamps) > Config.MAX_REQUESTS_PER_MINUTE:
-        wait_time = Config.REQUEST_WINDOW - (current_time - bot.request_timestamps[0])
+    if len(bot.request_timestamps) > bot.config.MAX_REQUESTS_PER_MINUTE:
+        wait_time = bot.config.REQUEST_WINDOW - (current_time - bot.request_timestamps[0])
         await asyncio.sleep(wait_time)
     
     return await acompletion(*args, **kwargs)
@@ -58,10 +58,15 @@ async def handle_chat_message(bot, message):
             "timestamp": time.time()
         })
         
-        if len(bot.conversation_history[message.channel.id]) > Config.MAX_MESSAGES:
-            bot.conversation_history[message.channel.id] = bot.conversation_history[message.channel.id][-Config.MAX_MESSAGES:]
+        if len(bot.conversation_history[message.channel.id]) > bot.config.MAX_MESSAGES:
+            bot.conversation_history[message.channel.id] = bot.conversation_history[message.channel.id][-bot.config.MAX_MESSAGES:]
 
         response = await generate_response(bot, bot.conversation_history[message.channel.id])
+
+        # Truncate the response if it exceeds MAX_TEXT
+        if len(response) > bot.config.MAX_TEXT:
+            truncation_msg = "... (response truncated due to length)"
+            response = response[:bot.config.MAX_TEXT - len(truncation_msg)] + truncation_msg
 
         bot.conversation_history[message.channel.id].append({
             "role": "assistant",
@@ -69,7 +74,11 @@ async def handle_chat_message(bot, message):
             "timestamp": time.time()
         })
 
-        await message.reply(response)
+        # Split the response into chunks of MAX_TEXT length
+        chunks = [response[i:i+bot.config.MAX_TEXT] for i in range(0, len(response), bot.config.MAX_TEXT)]
+        
+        for chunk in chunks:
+            await message.reply(chunk)
 
         if message.guild and message.guild.voice_client and bot.tts_enabled:
             from .tts_utils import generate_tts, cleanup_tts_file
