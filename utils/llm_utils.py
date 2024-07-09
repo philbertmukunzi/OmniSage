@@ -5,14 +5,15 @@ import discord
 from litellm import acompletion
 from .grounding_utils import load_grounding_data
 from config import Config
+from .rag_utils import rag_query
 
 async def generate_response(bot, messages: List[Dict[str, Any]]) -> str:
-    """Generate a response using the configured LLM."""
+    """Generate a response using the configured LLM and RAG if available."""
     try:
-        grounding_data = load_grounding_data() if bot.config.USE_GROUNDING else []
-        grounding_context = "\n".join([f"Content of {data['filename']}:\n{data['content']}" for data in grounding_data])
+        last_message = messages[-1]['content']
+        rag_response = await rag_query(last_message)
         
-        system_message = f"{bot.config.SYSTEM_PROMPT}\n\nGrounding Information:\n{grounding_context}" if grounding_data else bot.config.SYSTEM_PROMPT
+        system_message = f"{bot.config.SYSTEM_PROMPT}\n\nRelevant Information: {rag_response}"
         
         kwargs = {
             "model": bot.config.LLM_MODEL,

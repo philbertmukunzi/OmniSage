@@ -3,20 +3,26 @@ import boto3
 from azure.storage.blob import BlobServiceClient
 from config import Config
 from docx import Document
+from .rag_utils import initialize_rag
 
 def load_grounding_data():
     if not Config.USE_GROUNDING:
         return []
 
+    grounding_data = []
     if Config.GROUNDING_SOURCE == "local":
-        return load_local_grounding_data()
+        grounding_data = load_local_grounding_data()
     elif Config.GROUNDING_SOURCE == "s3":
-        return load_s3_grounding_data()
+        grounding_data = load_s3_grounding_data()
     elif Config.GROUNDING_SOURCE == "azure":
-        return load_azure_grounding_data()
+        grounding_data = load_azure_grounding_data()
     else:
         print(f"Unknown grounding source: {Config.GROUNDING_SOURCE}")
-        return []
+    
+    if grounding_data:
+        initialize_rag(grounding_data)
+    
+    return grounding_data
 
 def load_local_grounding_data():
     grounding_data = []
