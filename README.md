@@ -1,13 +1,14 @@
-# OmniSage: Discord LLM Chatbot
+# OmniSage: AI-Powered Discord Bot
 
-OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, and provide text-to-speech functionality. It's designed to be your all-knowing companion in Discord servers.
+OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, provide text-to-speech functionality, and includes an interactive, AI-powered trivia game. It's designed to be your all-knowing companion in Discord servers.
 
 **🚀 Hobby Project Disclaimer 🛸**
-> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code. Remember, even AI needs to let its hair down sometimes! 😉
+> Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code.  😉
 
 ## Table of Contents
 1. [Features](#features)
 2. [Features in Detail](#features-in-detail)
+3. [Retrieval-Augmented Generation (RAG) System](#retrieval-augmented-generation-rag-system)
 3. [Planned Features](#planned-features)
 4. [Prerequisites](#prerequisites)
 5. [Installation](#installation)
@@ -53,11 +54,12 @@ The bot maintains conversation history to provide context-aware responses, enhan
 ### Custom Knowledge Grounding
 - Enhance OmniSage's knowledge with custom data. BYOD (Bring your Own Data)
 - Support for multiple data sources:
-  - Local files (.txt and .docx)
+  - Local files (.txt, .pdf and .docx)
   - Amazon S3
   - Azure Blob Storage
 - Dynamic reloading of grounding data without bot restart
 - Detailed logging of loaded grounding files
+- Improved chunking and metadata for more relevant information retrieval
 
 ### Advanced Conversation Management
 - Conversation history tracking for context-aware responses
@@ -80,10 +82,65 @@ An exciting trivia game feature that showcases OmniSage's AI capabilities:
 - Start a game with `!trivia <topic>` on any subject
 - AI generates 5 unique, topic-specific multiple-choice questions
 - Players answer by typing A, B, C, or D (case-insensitive)
-- 15-second answer window for each question
+- 30-second answer window for each question
 - Multiple players can answer and earn points
 - Administrators can stop the game at any time with `!stop_trivia`
 - Detailed end-game summary with scores and statistics
+
+
+## Retrieval-Augmented Generation (RAG) System
+
+OmniSage employs a sophisticated RAG system to enhance its responses with relevant information from its knowledge base. This system combines the power of large language models with efficient information retrieval techniques.
+
+### Key Components:
+
+1. **LangChain**: We use LangChain, a powerful framework for developing applications powered by language models. LangChain provides the backbone for our RAG system, offering tools for document loading, text splitting, and chain creation.
+
+2. **ChromaDB**: Our vector store of choice is ChromaDB, an open-source embedding database. ChromaDB allows us to efficiently store and retrieve vector representations of our knowledge base.
+
+3. **OpenAI Embeddings**: We utilize OpenAI's text embedding model to convert text into high-dimensional vector representations. These embeddings capture semantic meanings, enabling more accurate information retrieval.
+
+4. **Custom Text Splitter**: We implement a `RecursiveCharacterTextSplitter` to break down large documents into manageable chunks while maintaining context.
+
+### How It Works:
+
+1. **Document Ingestion**: When grounding data is loaded, each document is split into smaller chunks using the `RecursiveCharacterTextSplitter`.
+
+2. **Embedding Generation**: Each chunk is then converted into a vector embedding using OpenAI's embedding model.
+
+3. **Vector Storage**: These embeddings are stored in ChromaDB along with metadata about their source.
+
+4. **Query Processing**: When a user query comes in, it's also converted to an embedding.
+
+5. **Similarity Search**: The system performs a similarity search in ChromaDB to find the most relevant chunks of information.
+
+6. **Context-Enhanced Generation**: The retrieved information is then used to augment the prompt sent to the language model, allowing it to generate more informed and accurate responses.
+
+7. **Source Attribution**: The bot can provide information about the sources of its knowledge, increasing transparency and trustworthiness.
+
+This RAG system allows OmniSage to leverage its extensive knowledge base effectively, providing responses that are both contextually relevant and factually grounded.
+
+### Custom Knowledge Grounding
+
+OmniSage's knowledge can be enhanced with custom data, truly embracing the BYOD (Bring Your Own Data) concept.
+
+- **Multiple Data Sources**: 
+  - Local files (.txt and .docx)
+  - Amazon S3
+  - Azure Blob Storage
+
+- **Dynamic Reloading**: Grounding data can be reloaded without restarting the bot, allowing for real-time knowledge updates.
+
+- **Detailed Logging**: The grounding process is accompanied by comprehensive logging, providing insights into the data loading and processing steps.
+
+- **Improved Chunking and Metadata**: 
+  - Uses `RecursiveCharacterTextSplitter` for intelligent text splitting
+  - Chunk size: 300 characters
+  - Chunk overlap: 100 characters
+  - Metadata includes source filename and start index for precise attribution
+
+- **Flexible File Handling**: The system attempts multiple encodings (UTF-8, Latin-1, ASCII) when reading files, increasing compatibility with various file formats.
+
 
 
 ## Planned Features
@@ -134,6 +191,25 @@ An exciting trivia game feature that showcases OmniSage's AI capabilities:
     - `GROUNDING_SOURCE`: Set to 'local', 's3', or 'azure'
     - `GROUNDING_PATH`: Path to local grounding files or prefix for remote storage
 
+### RAG System Configuration
+
+To configure the RAG system, you need to set the following environment variables:
+
+- `USE_GROUNDING`: Set to `true` to enable the RAG system
+- `GROUNDING_SOURCE`: Choose from `local`, `s3`, or `azure`
+- `GROUNDING_PATH`: Path to local grounding files or prefix for remote storage
+- `OPENAI_API_KEY`: Your OpenAI API key (used for embeddings)
+
+For S3:
+
+- `AWS_ACCESS_KEY_ID`: Your AWS access key
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
+- `AWS_BUCKET_NAME`: Your S3 bucket name
+
+For Azure:
+
+- `AZURE_STORAGE_CONNECTION_STRING`: Your Azure storage connection string
+- `AZURE_CONTAINER_NAME`: Your Azure container name
 ## Installation
 
 
@@ -259,7 +335,7 @@ To interact with OmniSage, either mention it or use it in allowed channels.
 
 OmniSage supports grounding with custom data from three sources:
 
-1. Local files
+1. Local files (.txt and .docx)
 2. Amazon S3
 3. Azure Blob Storage
 
@@ -270,7 +346,27 @@ To use grounding:
 3. For local grounding, place your text files in the directory specified by `GROUNDING_PATH`.
 4. For S3 or Azure, upload your text files to the specified bucket or container.
 
+The grounding system now uses improved chunking and metadata for more relevant information retrieval. The bot will mention the source of information in its responses when using grounded knowledge.
+
 Use the `!reload_grounding` command to refresh OmniSage's grounding data without restarting the bot.
+
+## Troubleshooting
+
+- If OmniSage doesn't respond, check if it has the necessary permissions in your Discord server.
+- Verify that the channel or user role is in the allowed list in the `.env` file.
+- For voice command issues, ensure FFmpeg is correctly installed and accessible.
+- Check the console output for any error messages.
+- If using Docker, ensure all necessary environment variables are properly set in your `.env` file.
+- For grounding issues, verify that your grounding files are in the correct format (.txt or .docx) and the `GROUNDING_PATH` is set correctly.
+- If encountering encoding errors with grounding files, ensure they are in UTF-8 encoding or update the `read_file_with_fallback_encoding` function in `grounding_utils.py` to include the correct encoding.
+
+## Contributing
+
+Contributions to OmniSage are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Troubleshooting
 

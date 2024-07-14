@@ -120,6 +120,7 @@ Thumbs.db
 config.ini
 *.log
 logs/
+chroma_db/
 data/
 response.mp3
 
