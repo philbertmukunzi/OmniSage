@@ -1,6 +1,6 @@
-# OmniSage: Discord LLM Chatbot
+# OmniSage: AI-Powered Discord Bot
 
-OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, and provide text-to-speech functionality. It's designed to be your all-knowing companion in Discord servers.
+OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, provide text-to-speech functionality, and includes an interactive, AI-powered trivia game. It's designed to be your all-knowing companion in Discord servers.
 
 **🚀 Hobby Project Disclaimer 🛸**
 > Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code. Remember, even AI needs to let its hair down sometimes! 😉
@@ -58,6 +58,7 @@ The bot maintains conversation history to provide context-aware responses, enhan
   - Azure Blob Storage
 - Dynamic reloading of grounding data without bot restart
 - Detailed logging of loaded grounding files
+- Improved chunking and metadata for more relevant information retrieval
 
 ### Advanced Conversation Management
 - Conversation history tracking for context-aware responses
@@ -80,11 +81,10 @@ An exciting trivia game feature that showcases OmniSage's AI capabilities:
 - Start a game with `!trivia <topic>` on any subject
 - AI generates 5 unique, topic-specific multiple-choice questions
 - Players answer by typing A, B, C, or D (case-insensitive)
-- 15-second answer window for each question
+- 30-second answer window for each question
 - Multiple players can answer and earn points
 - Administrators can stop the game at any time with `!stop_trivia`
 - Detailed end-game summary with scores and statistics
-
 
 ## Planned Features
 
@@ -259,7 +259,7 @@ To interact with OmniSage, either mention it or use it in allowed channels.
 
 OmniSage supports grounding with custom data from three sources:
 
-1. Local files
+1. Local files (.txt and .docx)
 2. Amazon S3
 3. Azure Blob Storage
 
@@ -270,7 +270,27 @@ To use grounding:
 3. For local grounding, place your text files in the directory specified by `GROUNDING_PATH`.
 4. For S3 or Azure, upload your text files to the specified bucket or container.
 
+The grounding system now uses improved chunking and metadata for more relevant information retrieval. The bot will mention the source of information in its responses when using grounded knowledge.
+
 Use the `!reload_grounding` command to refresh OmniSage's grounding data without restarting the bot.
+
+## Troubleshooting
+
+- If OmniSage doesn't respond, check if it has the necessary permissions in your Discord server.
+- Verify that the channel or user role is in the allowed list in the `.env` file.
+- For voice command issues, ensure FFmpeg is correctly installed and accessible.
+- Check the console output for any error messages.
+- If using Docker, ensure all necessary environment variables are properly set in your `.env` file.
+- For grounding issues, verify that your grounding files are in the correct format (.txt or .docx) and the `GROUNDING_PATH` is set correctly.
+- If encountering encoding errors with grounding files, ensure they are in UTF-8 encoding or update the `read_file_with_fallback_encoding` function in `grounding_utils.py` to include the correct encoding.
+
+## Contributing
+
+Contributions to OmniSage are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Troubleshooting
 
