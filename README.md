@@ -191,6 +191,25 @@ OmniSage's knowledge can be enhanced with custom data, truly embracing the BYOD 
     - `GROUNDING_SOURCE`: Set to 'local', 's3', or 'azure'
     - `GROUNDING_PATH`: Path to local grounding files or prefix for remote storage
 
+### RAG System Configuration
+
+To configure the RAG system, you need to set the following environment variables:
+
+- `USE_GROUNDING`: Set to `true` to enable the RAG system
+- `GROUNDING_SOURCE`: Choose from `local`, `s3`, or `azure`
+- `GROUNDING_PATH`: Path to local grounding files or prefix for remote storage
+- `OPENAI_API_KEY`: Your OpenAI API key (used for embeddings)
+
+For S3:
+
+- `AWS_ACCESS_KEY_ID`: Your AWS access key
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
+- `AWS_BUCKET_NAME`: Your S3 bucket name
+
+For Azure:
+
+- `AZURE_STORAGE_CONNECTION_STRING`: Your Azure storage connection string
+- `AZURE_CONTAINER_NAME`: Your Azure container name
 ## Installation
 
 
