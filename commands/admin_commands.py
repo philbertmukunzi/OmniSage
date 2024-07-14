@@ -1,5 +1,5 @@
 from discord.ext import commands
-from utils.llm_utils import load_grounding_data
+from utils.grounding_utils import load_grounding_data  # Changed from llm_utils to grounding_utils
 
 def setup_admin_commands(bot):
     @bot.command()
@@ -14,8 +14,6 @@ def setup_admin_commands(bot):
     async def toggle_tts(ctx):
         """Toggle Text-to-Speech on/off (Admin only)."""
         bot.tts_enabled = not bot.tts_enabled
-        # Update the environment variable
-        os.environ["TTS_ENABLED"] = str(bot.tts_enabled).lower()
         await ctx.send(f"Text-to-Speech is now {'enabled' if bot.tts_enabled else 'disabled'}.")
 
     @bot.command()
@@ -44,10 +42,6 @@ def setup_admin_commands(bot):
     @commands.has_permissions(administrator=True)
     async def reload_grounding(ctx):
         """Reload grounding data (Admin only)."""
-        if not bot.config.USE_GROUNDING:
-            await ctx.send("Grounding is currently disabled. Enable it in the configuration to use this feature.")
-            return
-
         try:
             grounding_data = load_grounding_data()
             await ctx.send(f"Grounding data reloaded. {len(grounding_data)} files loaded.")

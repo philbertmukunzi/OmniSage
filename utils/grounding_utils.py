@@ -4,11 +4,22 @@ from azure.storage.blob import BlobServiceClient
 from config import Config
 from docx import Document
 from .rag_utils import initialize_rag
+import logging
+import os
+from typing import List, Dict, Optional
+from .rag_utils import initialize_rag
+from config import Config
 
-def load_grounding_data():
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def load_grounding_data() -> List[Dict[str, str]]:
     if not Config.USE_GROUNDING:
+        logger.info("Grounding is disabled")
         return []
 
+    logger.info(f"Loading grounding data from source: {Config.GROUNDING_SOURCE}")
     grounding_data = []
     if Config.GROUNDING_SOURCE == "local":
         grounding_data = load_local_grounding_data()
@@ -17,25 +28,45 @@ def load_grounding_data():
     elif Config.GROUNDING_SOURCE == "azure":
         grounding_data = load_azure_grounding_data()
     else:
-        print(f"Unknown grounding source: {Config.GROUNDING_SOURCE}")
+        logger.error(f"Unknown grounding source: {Config.GROUNDING_SOURCE}")
+    
+    logger.info(f"Loaded {len(grounding_data)} grounding documents")
     
     if grounding_data:
+        logger.info("Initializing RAG system with grounding data")
         initialize_rag(grounding_data)
+    else:
+        logger.warning("No grounding data found. RAG system will not be initialized.")
     
     return grounding_data
 
-def load_local_grounding_data():
+def load_local_grounding_data() -> List[Dict[str, str]]:
     grounding_data = []
     for filename in os.listdir(Config.GROUNDING_PATH):
         file_path = os.path.join(Config.GROUNDING_PATH, filename)
-        if filename.endswith(".txt"):
-            with open(file_path, "r", encoding='utf-8') as f:
-                content = f.read()
+        if os.path.isfile(file_path):
+            content = read_file_with_fallback_encoding(file_path)
+            if content is not None:
                 grounding_data.append({"filename": filename, "content": content})
-        elif filename.endswith(".docx"):
-            content = read_docx(file_path)
-            grounding_data.append({"filename": filename, "content": content})
     return grounding_data
+
+def read_file_with_fallback_encoding(file_path: str) -> Optional[str]:
+    encodings = ['utf-8', 'latin-1', 'ascii']
+    for encoding in encodings:
+        try:
+            with open(file_path, 'r', encoding=encoding) as file:
+                return file.read()
+        except UnicodeDecodeError:
+            logger.warning(f"Failed to decode {file_path} with {encoding} encoding. Trying next encoding.")
+        except Exception as e:
+            logger.error(f"Error reading file {file_path}: {str(e)}")
+            return None
+    
+    logger.error(f"Failed to read {file_path} with all attempted encodings.")
+    return None
+
+
+__all__ = ['load_grounding_data']
 
 def read_docx(file_path):
     doc = Document(file_path)
@@ -84,3 +115,5 @@ def load_azure_grounding_data():
             grounding_data.append({"filename": blob.name, "content": content})
     
     return grounding_data
+
+__all__ = ['load_grounding_data']
