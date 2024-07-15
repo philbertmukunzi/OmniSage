@@ -1,6 +1,6 @@
 # OmniSage: AI-Powered Discord Bot
 
-OmniSage is a versatile Discord bot that leverages Language Learning Models (LLMs) to generate intelligent responses, join voice channels, provide text-to-speech functionality, and includes an interactive, AI-powered trivia game. It's designed to be your all-knowing companion in Discord servers.
+OmniSage is a versatile Discord bot that leverages Large Learning Models (LLMs) to generate intelligent responses, join voice channels, provide text-to-speech functionality, and includes an interactive, AI-powered trivia game. It's designed to be your all-knowing companion in Discord servers.
 
 **🚀 Hobby Project Disclaimer 🛸**
 > Warning: This bot may occasionally produce wisdom beyond human comprehension or just utter nonsense. It's a hobby project built to learn and practice LLM integration. Expect the unexpected, embrace the chaos, and don't be surprised if you find some "optimized" spaghetti code.  😉
@@ -35,7 +35,7 @@ OmniSage is a versatile Discord bot that leverages Language Learning Models (LLM
 ## Features in Detail
 
 ### Intelligent Conversations
-OmniSage utilizes state-of-the-art Language Learning Models to generate human-like responses. It supports multiple LLM providers:
+OmniSage utilizes state-of-the-art Large Learning Models to generate human-like responses. It supports multiple LLM providers:
 - OpenAI (GPT-3.5, GPT-4, GPT-4o)
 - Anthropic (Claude, Claude Instant)
 - Local models (with appropriate setup)
