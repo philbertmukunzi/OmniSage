@@ -21,6 +21,18 @@ OmniSage is a versatile Discord bot that leverages Large Language Model (LLMs) t
 12. [Contributing](#contributing)
 13. [License](#license)
 
+
+## Youtube Demo
+### D&D Demo
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/0LTEDijhnGc/0.jpg)](https://www.youtube.com/watch?v=0LTEDijhnGc)
+
+### Customer support mode Demo (3 changes in env file)
+#### For this demo, we are using a fictitious company called Spearhead. We have prepared seven files that provide essential information to ground the AI model. These files include details about the product, a FAQ, and an Azure integration guide and manual. These documents will be used for Retrieval-Augmented Generation (RAG) and stored in the Chroma DB open-source embedding database.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/N9kvVOCFLBk/0.jpg)](https://www.youtube.com/watch?v=N9kvVOCFLBk)
+
+
+
 ## Features
 
 - AI-powered conversations using various LLM providers
